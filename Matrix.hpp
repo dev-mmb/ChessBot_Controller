@@ -9,8 +9,8 @@ public:
 
 	int read(uint8_t x, uint8_t y) 
 	{
-		byte xb = 1 << x;
-		byte yb = ~ (1 << y);
+		byte xb =  ~(1 << x);
+		byte yb =  (1 << y);
 		xShift.write(xb);
 		yShift.write(yb);
 	}

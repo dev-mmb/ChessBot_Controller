@@ -64,6 +64,9 @@ class Plotter {
       xAxis.setCurrentPosition(0);
       yAxis.setCurrentPosition(0);
     }
+    void moveOffBoard() {
+      moveAxes(3400, 3300);
+    }
   public:
     static const int16_t boardXOffset = 400;
     static const int16_t boardYOffset = 400;
@@ -101,13 +104,15 @@ class Plotter {
       // Clear any existing pieces in second tile of UCI instruction
       // e.g A1B1 -> clear B1
       // TODO: Add check to see if clearing necessary?
+      // Magnet is first disabled to prevent servo moving to the 90deg position on first instruction
+      disableMagnet();
       moveAxes(xTargetTwo, yTargetTwo);
       enableMagnet();
       // Move to Y lane to avoid interfering with other pieces
       moveAxes(xTargetTwo, getNearestLane(yInputTwo) + boardYOffset, true);
       delay(plotterDelay);
       // Move Piece off of board via Y lane
-      moveAxes(0, 0);
+      moveOffBoard();
       disableMagnet();
 
       // Move to first tile in UCI instruction and turn on magnet
@@ -133,8 +138,10 @@ class Plotter {
       moveAxes(xTargetTwo, getNearestLane(yInputTwo) + boardYOffset);
       delay(plotterDelay);
       // Move piece to target via Y axis and disable magnet, return to zero
-      moveAxes(xTargetTwo, yTargetTwo, true);
-      delay(plotterDelay);
+
+      // Commented out to fix pieces overshooting their target position by movement of the magnet servo.
+      //moveAxes(xTargetTwo, yTargetTwo, true);
+      //delay(plotterDelay);
       disableMagnet();
 
       // Zero is reset to maintain consistency in case of belt slip.
@@ -150,7 +157,7 @@ void setup() {
   Axis xA(2, 3);
   Axis yA(4, 5);
   const int16_t MAGNET_PIN = 9;
-  
+
   Servo servo;
   servo.attach(MAGNET_PIN);
   plotter = new Plotter(yA, xA, servo);

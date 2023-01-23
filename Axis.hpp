@@ -2,7 +2,7 @@
 
 class Axis {
     uint32_t dirPin, stepPin;
-    int16_t currentPosition;
+    int16_t currentPosition = 0;
   public:
     static const int16_t speed = 800;
 
@@ -17,6 +17,7 @@ class Axis {
     uint32_t getStepPin() const {
       return stepPin;
     }
+    
 
     int16_t getCurrentPosition() {
       return currentPosition;
@@ -25,10 +26,6 @@ class Axis {
       currentPosition = curpos;
     }
     void goToPosition(int16_t target) {
-      Serial.print("stepPin: ");
-      Serial.print(stepPin);
-      Serial.print(", dirPin: ");
-      Serial.println(dirPin);
       if (currentPosition == target) return;
       else if (currentPosition < target) {
         digitalWrite(dirPin, HIGH);
@@ -48,6 +45,7 @@ class Axis {
           delayMicroseconds(speed);
         }
       }
+      //Serial.println("Destination reached!");
       currentPosition = target;
     }
 };

@@ -28,9 +28,9 @@ class Plotter {
     }
     
   public:
-    static const int16_t boardXOffset = 400;
-    static const int16_t boardYOffset = 400;
-    static const int16_t tileWidth = 200;
+    static const int16_t boardXOffset = 600;
+    static const int16_t boardYOffset = 200;
+    static const int16_t tileWidth = 313;
     static const int16_t asciiLowerCaseOffset = 'a' - 1;
     static const int16_t magnetDelay = 1000;
     static const int16_t plotterDelay = 500;
@@ -121,4 +121,7 @@ class Plotter {
       // Zero is reset to maintain consistency in case of belt slip.
       resetZero();
     }
+    void t(){
+      enableMagnet();
+      }
 };

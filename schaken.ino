@@ -9,17 +9,17 @@ Plotter* plotter;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  
+
   const int16_t MAGNET_PIN = 9;
   Servo servo;
   servo.attach(MAGNET_PIN);
-  plotter = new Plotter(2, 3, 4, 5, servo);
-  
+  plotter = new Plotter(4, 5, 2, 3, servo);
+
   pinMode(plotter->getXDirPin(), OUTPUT);
   pinMode(plotter->getXStepPin(), OUTPUT);
   pinMode(plotter->getYDirPin(), OUTPUT);
   pinMode(plotter->getYStepPin(), OUTPUT);
-  
+
   pinMode(matrix.getXLatchPin(), OUTPUT);
   pinMode(matrix.getYLatchPin(), OUTPUT);
   pinMode(matrix.getXClockPin(), OUTPUT);
@@ -27,26 +27,41 @@ void setup() {
   pinMode(matrix.getXDataPin(), OUTPUT);
   pinMode(matrix.getYDataPin(), OUTPUT);
   pinMode(readpin, INPUT_PULLUP);
-  
-  
 }
 
 void loop() {
-    //for (int y = 0; y < 8; y++) {
-    //  for (int x = 0; x < 8; x++) {
-    //    int v = matrix.read(x, y);
-    //    Serial.print((v < 400) ? " # " :  " . ");
-    //    Serial.print("   ");
-    //    delay(4);
-    //  }
-     // Serial.println();
-    //}
-   //Serial.println("-----------------------------------------");
-   //delay(50);
 
-   plotter->uciInstruction("a1b1");
+  //for (int y = 0; y < 8; y++) {
+  //  for (int x = 0; x < 8; x++) {
+  //    int v = matrix.read(x, y);
+  //    Serial.print((v < 400) ? " # " :  " . ");
+  //    Serial.print("   ");
+  //    delay(4);
+  //  }
+  // Serial.println();
+  //}
+  //Serial.println("-----------------------------------------");
+  //delay(50);
+  String inp;
 
-   
+  while (Serial.available() == 0) {}
+
+
+  inp = Serial.readString();
+  inp.trim();
+  //Serial.println(inp);
+  if (inp.length() == 4) {
+    plotter->uciInstruction(inp);
+  } else {
+    int delim = inp.indexOf(',');
+    int x = atoi(inp.substring(0, delim).c_str());
+    int y = atoi(inp.substring(delim + 1, inp.length()).c_str());
+    //Serial.print("Moving to ");
+    //Serial.print(x);
+    //Serial.print(", ");
+    //Serial.println(y);
+    plotter->moveAxes(x, y);
+  }
 }
 
 void circle(Plotter& plotter) {

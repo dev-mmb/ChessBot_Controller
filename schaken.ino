@@ -1,3 +1,4 @@
+#include <Servo.h>
 #include "Matrix.hpp"
 #include "Plotter.hpp"
 int readpin = A1;
@@ -8,32 +9,42 @@ Plotter* plotter;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  pinMode(readpin, INPUT_PULLUP);
-
-  Axis xA(2, 3);
-  Axis yA(4, 5);
+  
   const int16_t MAGNET_PIN = 9;
-
   Servo servo;
   servo.attach(MAGNET_PIN);
-  plotter = new Plotter(yA, xA, servo);
-
+  plotter = new Plotter(2, 3, 4, 5, servo);
+  
+  pinMode(plotter->getXDirPin(), OUTPUT);
+  pinMode(plotter->getXStepPin(), OUTPUT);
+  pinMode(plotter->getYDirPin(), OUTPUT);
+  pinMode(plotter->getYStepPin(), OUTPUT);
+  
+  pinMode(matrix.getXLatchPin(), OUTPUT);
+  pinMode(matrix.getYLatchPin(), OUTPUT);
+  pinMode(matrix.getXClockPin(), OUTPUT);
+  pinMode(matrix.getYClockPin(), OUTPUT);
+  pinMode(matrix.getXDataPin(), OUTPUT);
+  pinMode(matrix.getYDataPin(), OUTPUT);
+  pinMode(readpin, INPUT_PULLUP);
+  
+  
 }
 
 void loop() {
-    for (int y = 0; y < 8; y++) {
-      for (int x = 0; x < 8; x++) {
-        int v = matrix.read(x, y);
-        Serial.print((v < 400) ? " # " :  " . ");
-        Serial.print("   ");
-        delay(4);
-      }
-      Serial.println();
-    }
-   Serial.println("-----------------------------------------");
-   delay(50);
+    //for (int y = 0; y < 8; y++) {
+    //  for (int x = 0; x < 8; x++) {
+    //    int v = matrix.read(x, y);
+    //    Serial.print((v < 400) ? " # " :  " . ");
+    //    Serial.print("   ");
+    //    delay(4);
+    //  }
+     // Serial.println();
+    //}
+   //Serial.println("-----------------------------------------");
+   //delay(50);
 
-   square(*plotter);
+   plotter->uciInstruction("a1b1");
 
    
 }

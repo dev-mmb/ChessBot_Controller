@@ -26,6 +26,7 @@ class Plotter {
     void moveOffBoard() {
       moveAxes(3400, 3300);
     }
+    
   public:
     static const int16_t boardXOffset = 400;
     static const int16_t boardYOffset = 400;
@@ -34,8 +35,9 @@ class Plotter {
     static const int16_t magnetDelay = 1000;
     static const int16_t plotterDelay = 500;
 
-    Plotter(Axis& x, Axis& y, Servo& _servo) : xAxis(x), yAxis(y), servo(_servo) { }
+    Plotter(uint32_t dp, uint32_t sp, uint32_t dp2, uint32_t sp2, Servo& _servo) : xAxis(Axis{dp, sp}), yAxis(Axis{dp2, sp2}), servo(_servo) { }
     void moveAxes(int16_t x, int16_t y, bool xFirst = true) {
+      
       if (xFirst) {
         xAxis.goToPosition(x);
         yAxis.goToPosition(y);
@@ -43,7 +45,20 @@ class Plotter {
         yAxis.goToPosition(y);
         xAxis.goToPosition(x);
       }
-    }
+    } 
+    uint32_t getXDirPin() const {
+          return xAxis.getDirPin();
+        }
+        uint32_t getXStepPin() const {
+          return xAxis.getStepPin();
+        }
+
+        uint32_t getYDirPin() const {
+          return yAxis.getDirPin();
+        }
+        uint32_t getYStepPin() const {
+          return yAxis.getStepPin();
+        }
     void uciInstruction(String uci) {
       // Does not support promotions
       String halfOne = uci.substring(0, 2);

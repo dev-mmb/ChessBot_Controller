@@ -1,16 +1,23 @@
 #include <Servo.h>
 
 class Axis {
-    int16_t currentPosition, dirPin, stepPin;
+    uint32_t dirPin, stepPin;
+    int16_t currentPosition;
   public:
     static const int16_t speed = 800;
 
-    Axis (int16_t dp, int16_t sp) {
+
+    Axis(uint32_t dp, uint32_t sp) {
       dirPin = dp;
       stepPin = sp;
-      pinMode(stepPin, OUTPUT);
-      pinMode(dirPin, OUTPUT);
     }
+    uint32_t getDirPin() const {
+      return dirPin;
+    }
+    uint32_t getStepPin() const {
+      return stepPin;
+    }
+
     int16_t getCurrentPosition() {
       return currentPosition;
     }
@@ -18,8 +25,11 @@ class Axis {
       currentPosition = curpos;
     }
     void goToPosition(int16_t target) {
+      Serial.print("stepPin: ");
+      Serial.print(stepPin);
+      Serial.print(", dirPin: ");
+      Serial.println(dirPin);
       if (currentPosition == target) return;
-
       else if (currentPosition < target) {
         digitalWrite(dirPin, HIGH);
         for (int i = 0; i < target - currentPosition; i++) {

@@ -9,7 +9,7 @@ class Matrix
 public:
 	//Matrix(uint32_t readpin, uint32_t latchPin = 10, uint32_t clockPin = 12, uint32_t dataPin = 11, uint32_t latchPin2 = 6, uint32_t clockPin2 = 8, uint32_t dataPin2 = 7) 
 	//	: xShift(BitShift{latchPin, clockPin, dataPin}), yShift(BitShift{latchPin2, clockPin2, dataPin2}), readpin{readpin}
-	Matrix(uint32_t readpin, uint32_t latchPin = 16, uint32_t clockPin = 17, uint32_t dataPin = 18, uint32_t latchPin2 = 19, uint32_t clockPin2 = 20, uint32_t dataPin2 = 21) 
+	Matrix(uint32_t readpin, uint32_t latchPin = 10, uint32_t clockPin = 12, uint32_t dataPin = 11, uint32_t latchPin2 = 6, uint32_t clockPin2 = 8, uint32_t dataPin2 = 7) 
 		: xShift(BitShift{latchPin, clockPin, dataPin}), yShift(BitShift{latchPin2, clockPin2, dataPin2}), readpin{readpin}
 	
 	{}
@@ -17,8 +17,8 @@ public:
 	
 	int read(uint8_t x, uint8_t y) 
 	{
-		byte xb =  ~(1 << x);
-		byte yb =  (1 << y);
+		byte xb = (1 << x);
+		byte yb = ~ (1 << y);
 		xShift.write(xb);
 		yShift.write(yb);
 		return analogRead(readpin);
@@ -27,11 +27,22 @@ public:
 	void readBoard(Board& board) {
 		for (int x = 0; x < 8; x++) {
 			for (int y = 0; y < 8; y++) {
-				board.setTile(x, y, read(x, y));
-				delay(4);
+				board.setTile(x, y, read(x, y) < comprval);
+				delay(7);
 			}
 		}
 		delay(50);
+	}
+
+	void print() {
+		for (int x = 0; x < 8; x++) {
+			for (int y = 0; y < 8; y++) {
+				Serial.print((read(x, y) < comprval) ? "# " : ". ");
+				delay(7);
+			}
+			Serial.println();
+		}
+		Serial.println("----------------------------------------------"); 
 	}
 
 	uint32_t getXLatchPin() const { 
@@ -55,4 +66,5 @@ public:
 private:
 	const BitShift xShift, yShift;
 	const uint32_t readpin;
+	const int comprval = 400;
 };

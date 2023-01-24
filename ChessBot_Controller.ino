@@ -14,14 +14,14 @@ void setup() {
   Serial.begin(9600);
 
   const int16_t MAGNET_PIN = 9;
-  Servo servo;
-  servo.attach(MAGNET_PIN);
-  plotter = new Plotter(4, 5, 2, 3, servo);
+  //Servo servo;
+  //servo.attach(MAGNET_PIN);
+  //plotter = new Plotter(4, 5, 2, 3, servo);
 
-  pinMode(plotter->getXDirPin(), OUTPUT);
-  pinMode(plotter->getXStepPin(), OUTPUT);
-  pinMode(plotter->getYDirPin(), OUTPUT);
-  pinMode(plotter->getYStepPin(), OUTPUT);
+  //pinMode(plotter->getXDirPin(), OUTPUT);
+  //pinMode(plotter->getXStepPin(), OUTPUT);
+  //pinMode(plotter->getYDirPin(), OUTPUT);
+  //pinMode(plotter->getYStepPin(), OUTPUT);
 
   pinMode(matrix.getXLatchPin(), OUTPUT);
   pinMode(matrix.getYLatchPin(), OUTPUT);
@@ -30,13 +30,13 @@ void setup() {
   pinMode(matrix.getXDataPin(), OUTPUT);
   pinMode(matrix.getYDataPin(), OUTPUT);
   pinMode(readpin, INPUT_PULLUP);
-
-  matrix.readBoard(fst);
 }
 
 void loop() {  
   String inp;
-  
+
+  matrix.readBoard(fst);
+  usingFst = false;
   while (Serial.available() == 0) {
     Board& prev = usingFst ? snd : fst;
     Board& current = usingFst ? fst : snd;
@@ -44,30 +44,31 @@ void loop() {
     Change change;
     matrix.readBoard(current);
     if (current.difference(prev, change)) {
-      Serial.print(change.toString());
+      Serial.write(change.toString().c_str(), 10);
       Serial.flush();
       break;
     }
-
+    
     usingFst = !usingFst;
+
+    //matrix.print();
   }
 
 
-  inp = Serial.readString();
-  inp.trim();
-  Serial.println(inp);
-  if (inp.length() == 4) {
-    plotter->uciInstruction(inp);
-  } else {
-    int delim = inp.indexOf(',');
-    int x = atoi(inp.substring(0, delim).c_str());
-    int y = atoi(inp.substring(delim + 1, inp.length()).c_str());
-    //Serial.print("Moving to ");
-    //Serial.print(x);
-    //Serial.print(", ");
-    //Serial.println(y);
-    plotter->moveAxes(x, y);
-  }
+//  inp = Serial.readString();
+//  inp.trim();
+//  if (inp.length() == 4) {
+//    plotter->uciInstruction(inp);
+//  } else {
+//    int delim = inp.indexOf(',');
+//    int x = atoi(inp.substring(0, delim).c_str());
+//    int y = atoi(inp.substring(delim + 1, inp.length()).c_str());
+//    //Serial.print("Moving to ");
+//    //Serial.print(x);
+//    //Serial.print(", ");
+//    //Serial.println(y);
+//    plotter->moveAxes(x, y);
+//  }
 }
 
 void circle(Plotter& plotter) {

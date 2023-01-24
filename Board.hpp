@@ -18,10 +18,14 @@ public:
     bool difference(const Board& other, Change& change) const {
         for (size_t i = 0; i < 8 * 8; i++) {
             if (board[i] != other[i]) {
-                int x = i / 8;
-                int y = i % 8;
-                String uci = String('a' + x) + String('1' + y);
-                change = Change {other[i] ? Lift : Drop, uci};
+                char x = (char) (i / 8);
+                char y = (char) (i % 8);
+                char c1 = 'a' + x;
+                char c2 = '1' + y;
+                String str1 = String(c1);
+                String str2 = String(c2);
+                String str3 = str1 + str2;
+                change = Change {other[i] ? Lift : Drop, str3};
                 return true;
             }
         }

@@ -1,15 +1,27 @@
 #include <Servo.h>
 #include "Axis.hpp"
 
-class Plotter {
+class Plotter {    
     Axis xAxis, yAxis;
     Servo servo;
+
+    void lerpServo(int from, int to, int duration) {
+      const int steps = 20;
+      const int interval = duration / steps;
+      const int stepSize = (to - from) / steps;
+      
+      for (int i = 0; i < 20; i++) {
+        from += stepSize;
+        delay(interval);
+        servo.write(from);
+      }
+    }
     void enableMagnet() {
-      servo.write(180);
+      lerpServo(0, 180, 2000);
       delay(magnetDelay);
     }
     void disableMagnet() {
-      servo.write(0);
+      lerpServo(180, 0, 2000);
       delay(magnetDelay);
     }
     int16_t getNearestLane(int16_t tile) {
@@ -114,8 +126,8 @@ class Plotter {
       // Move piece to target via Y axis and disable magnet, return to zero
 
       // Commented out to fix pieces overshooting their target position by movement of the magnet servo.
-      //moveAxes(xTargetTwo, yTargetTwo, true);
-      //delay(plotterDelay);
+      moveAxes(xTargetTwo, yTargetTwo, true);
+      delay(plotterDelay);
       disableMagnet();
 
       // Zero is reset to maintain consistency in case of belt slip.

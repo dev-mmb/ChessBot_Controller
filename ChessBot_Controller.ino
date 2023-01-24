@@ -6,6 +6,9 @@ int readpin = A1;
 Matrix matrix{readpin};
 Plotter* plotter;
 
+Board fst, snd;
+bool usingFst = false;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -27,29 +30,32 @@ void setup() {
   pinMode(matrix.getXDataPin(), OUTPUT);
   pinMode(matrix.getYDataPin(), OUTPUT);
   pinMode(readpin, INPUT_PULLUP);
+
+  matrix.readBoard(fst);
 }
 
-void loop() {
-
-  //for (int y = 0; y < 8; y++) {
-  //  for (int x = 0; x < 8; x++) {
-  //    int v = matrix.read(x, y);
-  //    Serial.print((v < 400) ? " # " :  " . ");
-  //    Serial.print("   ");
-  //    delay(4);
-  //  }
-  // Serial.println();
-  //}
-  //Serial.println("-----------------------------------------");
-  //delay(50);
+void loop() {  
   String inp;
+  
+  while (Serial.available() == 0) {
+    Board& prev = usingFst ? snd : fst;
+    Board& current = usingFst ? fst : snd;
 
-  while (Serial.available() == 0) {}
+    Change change;
+    matrix.readBoard(current);
+    if (current.difference(prev, change)) {
+      Serial.print(change.toString());
+      Serial.flush();
+      break;
+    }
+
+    usingFst = !usingFst;
+  }
 
 
   inp = Serial.readString();
   inp.trim();
-  //Serial.println(inp);
+  Serial.println(inp);
   if (inp.length() == 4) {
     plotter->uciInstruction(inp);
   } else {

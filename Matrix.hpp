@@ -1,5 +1,9 @@
 #include "Bitshift.hpp"
+#include "Board.hpp"
 
+// latchPin = Blue
+// clockPin = Yellow
+// dataPin = Orange
 class Matrix 
 {
 public:
@@ -18,6 +22,16 @@ public:
 		xShift.write(xb);
 		yShift.write(yb);
 		return analogRead(readpin);
+	}
+
+	void readBoard(Board& board) {
+		for (int x = 0; x < 8; x++) {
+			for (int y = 0; y < 8; y++) {
+				board.setTile(x, y, read(x, y));
+				delay(4);
+			}
+		}
+		delay(50);
 	}
 
 	uint32_t getXLatchPin() const { 

@@ -36,7 +36,7 @@ class Plotter {
       yAxis.setCurrentPosition(0);
     }
     void moveOffBoard() {
-      moveAxes(3400, 3300);
+      moveAxes(3400, tileWidth * 4.5 + boardYOffset);
     }
     
   public:
@@ -126,14 +126,11 @@ class Plotter {
       // Move piece to target via Y axis and disable magnet, return to zero
 
       // Commented out to fix pieces overshooting their target position by movement of the magnet servo.
-      moveAxes(xTargetTwo, yTargetTwo, true);
-      delay(plotterDelay);
+      //moveAxes(xTargetTwo, yTargetTwo, true);
+      //delay(plotterDelay);
       disableMagnet();
 
       // Zero is reset to maintain consistency in case of belt slip.
       resetZero();
     }
-    void t(){
-      enableMagnet();
-      }
 };

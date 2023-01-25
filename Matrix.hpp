@@ -31,7 +31,7 @@ public:
 				delay(7);
 			}
 		}
-		delay(50);
+		delay(200);
 	}
 
 	void print() {
@@ -66,5 +66,5 @@ public:
 private:
 	const BitShift xShift, yShift;
 	const uint32_t readpin;
-	const int comprval = 400;
+	const int comprval = 800;
 };

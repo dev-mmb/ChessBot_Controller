@@ -17,7 +17,10 @@ private:
 public:
     bool difference(const Board& other, Change& change) const {
         for (size_t i = 0; i < 8 * 8; i++) {
-            if (board[i] != other[i]) {
+            if (other[i] != board[i]) {
+                //Serial.print(other[i]);
+                //Serial.print(", ");
+                //Serial.println(board[i]);
                 char x = (char) (i / 8);
                 char y = (char) (i % 8);
                 char c1 = 'a' + x;
@@ -25,9 +28,11 @@ public:
                 String str1 = String(c1);
                 String str2 = String(c2);
                 String str3 = str1 + str2;
-                change = Change {other[i] ? Lift : Drop, str3};
+
+                Action action = other[i] ? Lift : Drop;
+                change = Change {action, str3};
                 return true;
-            }
+              }
         }
         return false;
     }

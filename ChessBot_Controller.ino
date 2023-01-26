@@ -68,11 +68,11 @@ void loop() {
     }
   }
 
-
+  Board& board = usingFst ? snd : fst;
   inp = Serial.readString();
   inp.trim();
   if (inp.length() == 4) {
-    plotter->uciInstruction(inp);
+    plotter->uciInstruction(inp, board);
   } else {
     int delim = inp.indexOf(',');
     int x = atoi(inp.substring(0, delim).c_str());

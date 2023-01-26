@@ -71,7 +71,7 @@ class Plotter {
         uint32_t getYStepPin() const {
           return yAxis.getStepPin();
         }
-    void uciInstruction(String uci) {
+    void uciInstruction(String uci, Board& board) {
       // Does not support promotions
       String halfOne = uci.substring(0, 2);
       String halfTwo = uci.substring(2, 4);
@@ -89,17 +89,18 @@ class Plotter {
 
       // Clear any existing pieces in second tile of UCI instruction
       // e.g A1B1 -> clear B1
-      // TODO: Add check to see if clearing necessary?
       // Magnet is first disabled to prevent servo moving to the 90deg position on first instruction
       disableMagnet();
-      moveAxes(xTargetTwo, yTargetTwo);
-      enableMagnet();
-      // Move to Y lane to avoid interfering with other pieces
-      moveAxes(xTargetTwo, getNearestLane(yInputTwo) + boardYOffset, true);
-      delay(plotterDelay);
-      // Move Piece off of board via Y lane
-      moveOffBoard();
-      disableMagnet();
+      if (board[(xInputTwo - 1) * 8 + yInputTwo - 1]) {
+        moveAxes(xTargetTwo, yTargetTwo);
+        enableMagnet();
+        // Move to Y lane to avoid interfering with other pieces
+        moveAxes(xTargetTwo, getNearestLane(yInputTwo) + boardYOffset, true);
+        delay(plotterDelay);
+        // Move Piece off of board via Y lane
+        moveOffBoard();
+        disableMagnet();
+      }
 
       // Move to first tile in UCI instruction and turn on magnet
       // e.g: A1B1 -> move to A1 -> enable magnet
